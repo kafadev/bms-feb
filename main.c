@@ -74,6 +74,7 @@ bool check_conditions(float temp,
 	return true;
 }
 
+/* Helper function to read the line from the input file & into a pre-allocated buffer */
 void read_line_into_buffer(char *buffer, FILE *file) {
 	fgets(buffer, sizeof(buffer), file);
     buffer[strcspn(buffer, "\n")] = '\0';
