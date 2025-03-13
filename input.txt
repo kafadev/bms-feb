@@ -1,5 +1,5 @@
-DRIVE
-101
+IDLE
+10
 3
 10
 OK

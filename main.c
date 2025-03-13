@@ -16,7 +16,7 @@
 
 /* Import Sleep package for easier viewability */ 
 // Import packages specific to both WINDOWS
-#define SLEEP false;
+#define SLEEP true;
 #ifdef _WIN32 || _WIN64	
 #include <windows.h>
 #endif
@@ -54,7 +54,7 @@ bool check_conditions(float temp,
 
 	printf("State: Checking all conditions of BMS \n");
 
-	/* Check Temperature values [assumes discharging] */
+	/* Check Temperature values */
 	bool temp_OK = ((temp >= -20) && (temp <= 60));
 	printf("Temperature: %s\n", temp_OK ? "OK" : "NOT OK");
 	
@@ -158,9 +158,7 @@ int main() {
 		printf("/**************************/\n");
 		printf("Current State: %s\n", curr_state);
 		printf("/**************************/\n");
-		#ifdef defined(SLEEP)
 		sleep(2); // Sleep so that we can witness changes across time. 
-		#endif
 
 		if (strcmp(curr_state, "DRIVE") == 0) {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
@@ -188,7 +186,7 @@ int main() {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
 
 			// if accelerator IS IN USE, then switch to DRIVE
-			if (!*accel_in_use) {
+			if (*accel_in_use) {
 				strcpy(curr_state, "DRIVE"); // switch state to DRIVE
 			}
 
