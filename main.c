@@ -14,11 +14,13 @@
 #include <stdio.h>
 #include <string.h>
 
-// Import packages specific to both WI
+/* Import Sleep package for easier viewability */ 
+// Import packages specific to both WINDOWS
 #ifdef _WIN32 || _WIN64	
 #include <windows.h>
 #endif
 
+// Import packages specific to LINUX / MACOS
 #ifdef __linux__ || __APPLE__	
 #include <unistd.h>
 #endif
