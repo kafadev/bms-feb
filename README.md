@@ -10,4 +10,7 @@ This code takes in a series of inputs at the beginning and effectively does a on
 4. Run via ./main in your local terminal.
 5. voila! you've got a running BMS state machine.
 
+## If Compilation Errors Occur:
 
+1. Try removing all instances of sleep()
+2. Try setting a C version (say C99) when compiling via the command: _gcc -std=c99 -o main main.c_
