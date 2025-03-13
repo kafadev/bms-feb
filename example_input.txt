@@ -1,0 +1,7 @@
+Curr_state: 
+Temperature: 
+Voltage:
+Current: 
+Fuse_OK: 
+Overcurrent_OK:
+Shutdown_OK: 
