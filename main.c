@@ -70,9 +70,6 @@ void read_line_into_buffer(char *buffer, FILE *file) {
 
 int main() {
 
-	char main_state[100];
-	char sub_state[100];
-
 	/* Read the provided TEXT file to get in test inputs */
 	FILE* file = fopen("input.txt", "r");
 	if (file == NULL) {
