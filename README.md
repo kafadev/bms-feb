@@ -1,5 +1,5 @@
 # bms-feb
-A short demonstration of a BMS state machine for the Berkeley Formula Electric team. 
+A short demonstration of a BMS state machine for the Formula Electric team. 
 This code takes in a series of inputs at the beginning and effectively does a one-pass run through the state machine.
 
 ## Instructions
