@@ -136,7 +136,11 @@ int main() {
 	*/
 	printf("/**************************/\n");
 
+	while (true) {
+		printf("/**************************/\n");
 		printf("Current State: %s", curr_state);
+		sleep(2);
+		printf("/**************************/\n");
 
 		if (strcmp(curr_state, "DRIVE") == 0) {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
@@ -168,6 +172,7 @@ int main() {
 				strcpy(curr_state, "DRIVE"); // switch state to DRIVE
 			}
 		}
+	}
 	
 	// free all allocated variables (if needed)
 	free(temp);
