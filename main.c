@@ -3,6 +3,20 @@
 #include <stdio.h>
 #include <string.h>
 
+// Import packages specific to both WI
+#ifdef _WIN32 || _WIN64	
+#include <windows.h>
+#endif
+
+#ifdef __linux__ || __APPLE__	
+#include <unistd.h>
+#endif
+
+/* Run fault sequence */
+void run_fault_sequence() {
+
+
+}
 
 /* Check current and set different kinds of cooling */
 void turn_on_cooling_for_discharge(int current) {
@@ -103,6 +117,11 @@ int main() {
     bool *shutdown_signal = malloc(sizeof(bool));
     *shutdown_signal = (strcmp(buffer, "TRUE") == 0);
 
+	// Read shutdown_signal
+    read_line_into_buffer(buffer, file);
+    bool *accel_in_use = malloc(sizeof(bool));
+    *accel_in_use = (strcmp(buffer, "TRUE") == 0);
+
 	// Print all the file information;
 	printf("FILE Information: \n");
 	printf("Curr State: %s\n", curr_state);
@@ -112,35 +131,54 @@ int main() {
 	printf("Fuse: %s\n", *fuse_OK ? "OK" : "NOT OK");
 	printf("Overcurrent: %s\n", *overcurrent_OK ? "OK" : "NOT OK");
 	printf("Shutdown Signal: %s\n", *shutdown_signal ? "TRUE" : "FALSE");
+	printf("Accelerator: %s\n", *accel_in_use ? "ON" : "OFF");
 
 	/* LOOP the entire system forever until the USER quits the program 
 	
 		START either at DRIVE or IDLE
 	*/
 	printf("/**************************/\n");
-	
+
+		printf("Current State: %s", curr_state);
+
 		if (strcmp(curr_state, "DRIVE") == 0) {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
 
 			// if shutdown signal is hit, then switch the state. 
 			// execute the correct type of shutdown
 			if (*shutdown_signal) {
-				strcpy(curr_state, "IDLE");
-
+				printf("Shutdown signal triggered. Changing State to IDLE.\n");
+				strcpy(curr_state, "IDLE"); // switch state to IDLE
 			}
 
 			// some fault occured, run fault sequence
 			if (!ok) {
-				
+				run_fault_sequence();
+				strcpy(curr_state, "IDLE"); // switch state to IDLE
+			}
+
+			// if accelerator is NOT in use, then switch to IDLE
+			if (!*accel_in_use) {
+				strcpy(curr_state, "IDLE"); // switch state to IDLE
 			}
 		}
 
-		if (strcmp(curr_state, "DRIVE") == 0) {
+		else if (strcmp(curr_state, "IDLE") == 0) {
+			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
 
+			// if accelerator IS IN USE, then switch to DRIVE
+			if (!*accel_in_use) {
+				strcpy(curr_state, "DRIVE"); // switch state to DRIVE
+			}
 		}
-		
 	
-	
+	// free all allocated variables (if needed)
+	free(temp);
+    free(voltage);
+    free(current);
+    free(fuse_OK);
+    free(overcurrent_OK);
+    free(shutdown_signal);
 
 	return 0; 
 }
