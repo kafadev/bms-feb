@@ -16,6 +16,7 @@
 
 /* Import Sleep package for easier viewability */ 
 // Import packages specific to both WINDOWS
+#define SLEEP false;
 #ifdef _WIN32 || _WIN64	
 #include <windows.h>
 #endif
@@ -27,8 +28,10 @@
 
 /* Run fault sequence */
 void run_fault_sequence() {
-
-
+	printf("Running Fault Sequence:\n");
+	printf("Disabling Tractive system\n");
+	printf("Turning on BMS Indicator Light (RED)");
+	printf("Turning on Tractive System Indicator Light");
 }
 
 /* Check current and set different kinds of cooling */
@@ -40,7 +43,6 @@ void turn_on_cooling_for_discharge(int current) {
 	} else if (current <= 180) {
 		printf("10 sec. pulse, fuse limited.\n");
 	}
-
 }
 
 /* Check conditions to see if each item is in acceptable range */
@@ -65,6 +67,7 @@ bool check_conditions(float temp,
 	printf("Current: %s\n", current_OK ? "OK" : "NOT OK");
     turn_on_cooling_for_discharge(current);
 
+	/* Calculate if all conditions OK & fault if not. */
 	bool ok = (temp_OK && voltage_OK && current_OK && fuse_OK && overcurrent_OK);
 	if (!ok) {
 		printf("Not all conditions OK: FAULT occured.\n");
@@ -155,7 +158,9 @@ int main() {
 		printf("/**************************/\n");
 		printf("Current State: %s\n", curr_state);
 		printf("/**************************/\n");
+		#ifdef defined(SLEEP)
 		sleep(2); // Sleep so that we can witness changes across time. 
+		#endif
 
 		if (strcmp(curr_state, "DRIVE") == 0) {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
@@ -185,6 +190,11 @@ int main() {
 			// if accelerator IS IN USE, then switch to DRIVE
 			if (!*accel_in_use) {
 				strcpy(curr_state, "DRIVE"); // switch state to DRIVE
+			}
+
+			// run the fault sequence if condition check failed. Do not switch to drive
+			if (!ok) {
+				run_fault_sequence(); 
 			}
 		}
 	}
