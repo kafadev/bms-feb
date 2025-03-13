@@ -1,3 +1,14 @@
+// Author: Deven Bibikar
+/* Note that all the items are stored on the heap so that multiple functions can access them,
+	in an ideal case scenario, we run the file read procedure once we get a signal that a file is CHANGED;
+	(or even better, we just have a thread updating values based on signals directly from the car)
+	it's probably best run this state machine via multiple threads,
+	i.e. to have (1) thread running that checks the file for changes, 
+		another thread that updates each value, and maybe a lock for protecting / ensuring thread safety on those values 
+		all in all, best done in RUST. 
+	--> this code does not reflect multi-threading, but instead reads the values at the beginning 
+		and runs a one-pass through the BMS State Machine */
+
 #include <stdbool.h> 
 #include <stdlib.h>
 #include <stdio.h>
@@ -68,6 +79,7 @@ void read_line_into_buffer(char *buffer, FILE *file) {
     buffer[strcspn(buffer, "\n")] = '\0';
 }
 
+/* Main running function, the body of the program */
 int main() {
 
 	/* Read the provided TEXT file to get in test inputs */
@@ -138,9 +150,9 @@ int main() {
 
 	while (true) {
 		printf("/**************************/\n");
-		printf("Current State: %s", curr_state);
-		sleep(2);
+		printf("Current State: %s\n", curr_state);
 		printf("/**************************/\n");
+		sleep(2); // Sleep so that we can witness changes across time. 
 
 		if (strcmp(curr_state, "DRIVE") == 0) {
 			bool ok = check_conditions(*temp, *voltage, *current, *fuse_OK, *overcurrent_OK);
